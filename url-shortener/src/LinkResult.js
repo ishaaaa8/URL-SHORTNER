@@ -1,60 +1,3 @@
-// import { useEffect, useState } from 'react'
-// import CopyToClipboard from "react-copy-to-clipboard";
-// import axios from 'axios';
-// import './LinkResult.css';
-// const LinkResult = ({inputValue}) => {
-//     console.log(inputValue);
-//     const [shortenLink,setShortenLink] = useState("");
-//     console.log(shortenLink);
-
-//     const [copied,setCopied]=useState(false);
-//     const [loading , setLoading] = useState(false);
-//     const fetchData = async () =>{
-//         try{
-//             setLoading(true);
-//             const res= axios(`https://shrtlnk.dev/api/v2/${inputValue}`);
-//             setShortenLink(res.data);
-//         }
-//             catch(err){
-
-//         }finally{
-
-//         }
-//     } 
-
-
-//     useEffect(()=> {
-//         if(inputValue.length){
-//             fetchData();
-//         }
-//     })
-
-//     useEffect(()=>{
-//         const timer=setTimeout(()=>{
-//             setCopied(false);
-//         },1000);
-//         return ()=> clearTimeout(timer);
-//     },[copied])
-
-//   return (
-//     <div className='result'>
-//         <p>{shortenLink}</p>
-//         <CopyToClipboard 
-//             text={shortenLink}
-//             onCopy={()=> setCopied(true)}
-//         >
-
-//             <button className={copied? "copied":""}>Copy to clipboard</button>
-
-
-//         </CopyToClipboard>
-//     </div>
-//   )
-// }
-
-// export default LinkResult
-
-
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from "react-copy-to-clipboard";
 import axios from 'axios';
@@ -68,10 +11,17 @@ const LinkResult = ({ inputValue }) => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:8001/url', { url: inputValue });
-            
+
+            // Send POST request to deployed backend
+            const response = await axios.post(
+                'https://url-shortner-service-backend.onrender.com/url',
+                { url: inputValue }
+            );
+
             const shortID = response.data.id;
-            const shortenedURL = `http://localhost:8001/${shortID}`; // Concatenate short ID with base URL
+
+            // Construct the full shortened URL using Render base URL
+            const shortenedURL = `https://url-shortner-service-backend.onrender.com/${shortID}`;
             setShortenLink(shortenedURL);
 
         } catch (error) {
@@ -115,5 +65,3 @@ const LinkResult = ({ inputValue }) => {
 };
 
 export default LinkResult;
-
-

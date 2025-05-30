@@ -3,7 +3,9 @@ import React, { useState } from 'react'
 export default function InputShorener({setInputValue}) {
   const [value,setValue]=useState("");
   const handleClick = () => {
+    console.log("Button clicked"); 
     setInputValue(value);
+    console.log(value);
     setValue("");
   }
   return (
