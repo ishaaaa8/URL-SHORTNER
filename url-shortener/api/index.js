@@ -1,20 +1,22 @@
+require("dotenv").config(); // Load environment variables from .env
 const express = require("express");
-const cors = require("cors"); // Import cors module
+const cors = require("cors");
 const { connectToMongoDB } = require("./connect");
 
-const app = express(); // Initialize express app
-const PORT = 8001;
+const app = express();
+const PORT = process.env.PORT || 8001; // fallback to 8001 if not set
+const MONGODB_URI = process.env.MONGODB_URI;
+
 const urlRoute = require('./routes/url');
 const URL = require('./models/url');
 
-// Enable CORS middleware
 app.use(cors());
+app.use(express.json());
 
-connectToMongoDB('mongodb://localhost:27017/short-url')
+connectToMongoDB(MONGODB_URI)
     .then(() => console.log('Connection established'))
     .catch(error => console.error('MongoDB connection error:', error));
 
-app.use(express.json());
 app.use('/url', urlRoute);
 
 app.get('/:shortId', async (req, res) => {
@@ -35,4 +37,4 @@ app.get('/:shortId', async (req, res) => {
     res.redirect(entry.redirectURL);
 });
 
-app.listen(PORT, () => console.log(`Server at Port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on Port ${PORT}`));
